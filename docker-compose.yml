@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mysql-container:
+    image: mysql:8.0.42
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sahur
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  springboot-app:
+    build: .
+    container_name: springboot-container
+    depends_on:
+      mysql-container:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: mysql-container
+      DB_NAME: sahur
+      DB_USER: root
+      DB_PASSWORD: root
+    networks:
+      - backend
+
+volumes:
+  mysql_data:
+
+networks:
+  backend:
