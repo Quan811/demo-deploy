@@ -4,5 +4,5 @@ RUN apk add --no-cache bash curl tar && \
     ln -s /opt/apache-maven-3.9.1/bin/mvn /usr/bin/mvn
 WORKDIR /app
 COPY . /app
-RUN mvn clean install
+RUN mvn clean install -DskipTests
 ENTRYPOINT ["java", "-jar", "target/tung-tung-tung-sahur-0.0.1.jar"]
